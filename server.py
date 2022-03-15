@@ -1,9 +1,10 @@
 import flask
 import requests
-from threading import Thread
+from threading import Thread, Lock
 import pandas as pd
 import numpy as np
 import io
+import json
 
 
 app = flask.Flask(__name__)
@@ -13,8 +14,13 @@ threads_results = {
     "currency_from": None,
     "currency_to": None,
     "latest_rates": None,
-    "history": None
+    "history": None,
+    "error": None
 }
+
+err_response = requests.models.Response()
+
+err_lock = Lock()
 
 
 def thread_country_code(country_name, results_key, results):
@@ -26,6 +32,19 @@ def thread_country_code(country_name, results_key, results):
 
     if response_from.status_code != requests.codes.ok:
         print(f"Unable to resolve {country_name} currency code")
+        with err_lock:
+            threads_results['error'] = {
+                'code': 511,
+                'name': "Translation Error",
+                'description': f"Unable to resolve {country_name} currency code from service at: https://restcountries.com"
+            }
+            # err_response = requests.models.Response()
+            # err_response.status_code = 511
+            # err_response._content = bytes(json.dumps({
+            #     'code': 511,
+            #     'name': "Translation Error",
+            #     'description': f"Unable to resolve {country_name} currency code from service at: https://restcountries.com"
+            # }), encoding='utf-8')           
         return
     
     data = response_from.json()
@@ -41,6 +60,12 @@ def thread_latest(results):
     response = requests.get(f'https://api.exchangerate.host/latest?base={results["currency_from"]}&symbols=USD,EUR,GBP,CHF,BTC,{results["currency_to"]}')
     if response.status_code != requests.codes.ok:
         print("Unable to collect latest currency rates")
+        with err_lock:
+            threads_results['error'] = {
+                'code': 511,
+                'name': "Translation Error",
+                'description': f"Unable to collect latest currency rates from: https://exchangerate.host/"
+            }
         return
     data = response.json()
     results['latest_rates'] = data["rates"]
@@ -51,6 +76,13 @@ def thread_history(results, start, end):
     response = requests.get(f'https://api.exchangerate.host/timeseries?start_date={start}&end_date={end}&base={results["currency_from"]}&symbols={results["currency_to"]}&format=csv')
     if response.status_code != requests.codes.ok:
         print("Unable to collect time series currency data")
+        with err_lock:
+            threads_results['error'] = {
+                'code': 511,
+                'name': "Time-Series Collection Error",
+                'description': f"Unable to collect time series currency data. Start date: {start}, end date: {end}, transition: {results['currency_from']}->{results['currency_to']}." \
+                    + f'Service https://api.exchangerate.host/timeseries?start_date={start}&end_date={end}&base={results["currency_from"]}&symbols={results["currency_to"]}&format=csv has failed'
+            }
         return
     
     # load csv into data frame
@@ -74,6 +106,9 @@ def thread_history(results, start, end):
 @app.route('/home', methods=['GET'])
 def gettest():
 
+    # Assume Error free comunication
+    threads_results['error'] = None
+
     # Parse arguments from URL
     country_from = flask.request.args.get('country_from')
     country_to = flask.request.args.get('country_to')
@@ -96,6 +131,10 @@ def gettest():
         # Before we run thread latest and thread history, we need to have data from earlier threads
     th_country_from.join()
     th_country_to.join()
+        # Error check
+    if threads_results['error']:
+        return threads_results['error'], threads_results['error']['code']
+        
     th_history.start()
     th_latest.start()
 

@@ -19,7 +19,7 @@ class MyForm(FlaskForm):
     country_from = StringField(
         'The country name with currency you want to exchange FROM',
         validators=[DataRequired()],
-        default="poland"
+        default="dupa"
     )
     country_to = StringField(
         'The country name with currency you want to exchange TO',
@@ -71,6 +71,13 @@ def home():
         url = f'http://127.0.0.1:2137/home?country_from={country_from}&country_to={country_to}&start_date={start_date}&end_date={end_date}&amount={amount}'
         response = requests.get(url)
         result = response.json()
+
+        # Error check
+        if response.status_code != 200:
+            print("Error!")
+            # return response.json()
+            return render_template('511.html'), 511
+
         data = [
             f"Converting {result['out']['currency_from']} to {result['out']['currency_to']}",
             f"Statistics from {start_date} till {end_date}:",
