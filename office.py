@@ -1,3 +1,4 @@
+from os import abort
 from flask import Flask, render_template, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
@@ -72,19 +73,27 @@ def home():
         response = requests.get(url)
         result = response.json()
 
+        error_code = response.status_code
         # Error check
-        if response.status_code != 200:
-            print("Error!")
-            # return response.json()
-            return render_template('511.html'), 511
+        if error_code != 200:
+            print(f"Error {error_code}!")
+            if error_code in {511, 512, 513, 514}:
+                return render_template(
+                    f'error.html',
+                    error=str(error_code),
+                    name=result['name'],
+                    description=result['description']
+                ), error_code
+            else:
+                abort(error_code)
 
         data = [
-            f"Converting {result['out']['currency_from']} to {result['out']['currency_to']}",
+            f"Converting {result['out']['currency_from']} ({result['args']['country_from']}) to {result['out']['currency_to']} ({result['args']['country_to']})",
             f"Statistics from {start_date} till {end_date}:",
             f"mean rate: {round(result['out']['history']['mean'], 5)}",
             f"best rate in provided period: {round(result['out']['history']['best'], 5)} ({result['out']['history']['best_date'][:-13]})",
             "Summary",
-            f"With current rate {amount} {result['out']['currency_from']} is equal to {round(result['out']['summary']['amount return'], 5)} {result['out']['currency_to']}",
+            f"With current rate ({result['out']['latest rates'][result['out']['currency_to']]}) {amount} {result['out']['currency_from']} is equal to {round(result['out']['summary']['amount return'], 5)} {result['out']['currency_to']}",
             f"On {result['out']['history']['best_date'][:-13]} the same amount was worth {round(result['out']['summary']['best amount'], 5)} {result['out']['currency_to']}",
             f"Latest Rates",
             f"{result['out']['latest rates']}"
