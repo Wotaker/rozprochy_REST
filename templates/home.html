@@ -1,0 +1,38 @@
+{% extends 'bootstrap/base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+{{ super() }}
+	<style>
+		body { background: #cce7ff; }
+	</style>
+{% endblock %}
+
+
+{% block title %}
+Best Movie Actors
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-lg-8 mx-lg-auto mx-md-auto">
+
+      <h1 class="pt-5 pb-2">Welcome to the exchange office!</h1>
+
+      <p class="lead">Here you can get information about currencies</p>
+
+      {{ wtf.quick_form(form) }}
+
+      <p><br><strong>{{ msg1 }}</strong></p>
+      <p><strong>{{ msg2 }}</strong><br>{{ msg3 }}<br>{{ msg4 }}</p>
+      <p><strong>{{ msg5 }}</strong><br>{{ msg6 }}<br>{{ msg7 }}</p>
+      <p><strong>{{ msg8 }}</strong><br>{{ msg9 }}</p>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
