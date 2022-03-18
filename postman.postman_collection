@@ -1,0 +1,353 @@
+{
+	"variables": [],
+	"info": {
+		"name": "Rozprochy Lab REST",
+		"_postman_id": "2dbe79b0-f20a-3c7c-a656-027a1a513033",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "countries - Poland",
+			"request": {
+				"url": "https://restcountries.com/v3.1/name/poland",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "latest rates USD - HRK",
+			"request": {
+				"url": {
+					"raw": "https://api.exchangerate.host/latest?base=PLN&symbols=USD,EUR,GBP,CHF,BTC,HRK",
+					"protocol": "https",
+					"host": [
+						"api",
+						"exchangerate",
+						"host"
+					],
+					"path": [
+						"latest"
+					],
+					"query": [
+						{
+							"key": "base",
+							"value": "PLN",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "symbols",
+							"value": "USD,EUR,GBP,CHF,BTC,HRK",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "timeseries HRK - PLN",
+			"request": {
+				"url": {
+					"raw": "https://api.exchangerate.host/timeseries?start_date=2021-12-01&end_date=2022-02-01&base=HRK&symbols=PLN&format=csv",
+					"protocol": "https",
+					"host": [
+						"api",
+						"exchangerate",
+						"host"
+					],
+					"path": [
+						"timeseries"
+					],
+					"query": [
+						{
+							"key": "start_date",
+							"value": "2021-12-01",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "end_date",
+							"value": "2022-02-01",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "base",
+							"value": "HRK",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "symbols",
+							"value": "PLN",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "format",
+							"value": "csv",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "server example 1",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:2137/home?country_from=poland&country_to=hungary&start_date=2021-06-17&end_date=2021-07-30&amount=400",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "2137",
+					"path": [
+						"home"
+					],
+					"query": [
+						{
+							"key": "country_from",
+							"value": "poland",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "country_to",
+							"value": "hungary",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "start_date",
+							"value": "2021-06-17",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "end_date",
+							"value": "2021-07-30",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "amount",
+							"value": "400",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "ask for poland to hungary, exchange 400 PLN, timeseries form 17th June 2021 till 30 July 2021"
+			},
+			"response": []
+		},
+		{
+			"name": "server example 2",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:2137/home?country_from=ghana&country_to=usa&start_date=2021-06-17&end_date=2022-01-01&amount=199",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "2137",
+					"path": [
+						"home"
+					],
+					"query": [
+						{
+							"key": "country_from",
+							"value": "ghana",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "country_to",
+							"value": "usa",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "start_date",
+							"value": "2021-06-17",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "end_date",
+							"value": "2022-01-01",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "amount",
+							"value": "199",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "error country",
+			"request": {
+				"url": "https://restcountries.com/v3.1/name/nosuchcountryexists",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "error country client",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:2137/home?country_from=moseisley&country_to=hungary&start_date=2021-06-17&end_date=2021-07-30&amount=400",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "2137",
+					"path": [
+						"home"
+					],
+					"query": [
+						{
+							"key": "country_from",
+							"value": "moseisley",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "country_to",
+							"value": "hungary",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "start_date",
+							"value": "2021-06-17",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "end_date",
+							"value": "2021-07-30",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "amount",
+							"value": "400",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "error amount",
+			"request": {
+				"url": {
+					"raw": "http://127.0.0.1:2137/home?country_from=ghana&country_to=usa&start_date=2021-06-17&end_date=2022-01-01&amount=sto",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "2137",
+					"path": [
+						"home"
+					],
+					"query": [
+						{
+							"key": "country_from",
+							"value": "ghana",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "country_to",
+							"value": "usa",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "start_date",
+							"value": "2021-06-17",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "end_date",
+							"value": "2022-01-01",
+							"equals": true,
+							"description": ""
+						},
+						{
+							"key": "amount",
+							"value": "sto",
+							"equals": true,
+							"description": ""
+						}
+					],
+					"variable": []
+				},
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": "error amount"
+			},
+			"response": []
+		}
+	]
+}

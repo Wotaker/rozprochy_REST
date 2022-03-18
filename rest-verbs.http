@@ -1,7 +1,0 @@
-
-
-GET https://restcountries.com/v3.1/name/usa
-
-GET http://127.0.0.1:2137/home?country_from=poland&country_to=croatia&start_date=2022-01-01&end_date=2022-02-01&amount=100
-
-
